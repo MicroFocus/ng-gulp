@@ -1,0 +1,9 @@
+# NPM
+/node_modules
+
+# IDEA personal files
+.idea/workspace.xml
+.idea/dictionaries
+
+# Generated log files
+*.log

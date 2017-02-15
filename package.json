@@ -1,0 +1,37 @@
+{
+  "name": "ng-gulp",
+  "version": "0.1.0",
+  "description": "Angular build and development environment configurations",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Joe Hawkins <joe.hawkins@microfocus.com>",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "dependencies": {
+    "gulp": "3.9.1",
+    "gulp-autoprefixer": "3.1.1",
+    "gulp-clean": "0.3.2",
+    "gulp-clean-css": "3.0.2",
+    "gulp-concat": "2.6.1",
+    "gulp-connect": "5.0.0",
+    "gulp-filter": "5.0.0",
+    "gulp-imagemin": "3.1.1",
+    "gulp-rename": "1.2.2",
+    "gulp-sass": "3.1.0",
+    "gulp-sourcemaps": "2.4.1",
+    "gulp-uglify": "2.0.1",
+    "gulp-watch": "4.3.11",
+    "html-loader": "0.4.4",
+    "lodash": "4.17.4",
+    "ngtemplate-loader": "1.3.1",
+    "node-sass": "3.10.1",
+    "ts-loader": "2.0.0",
+    "tslint": "4.3.1",
+    "tslint-loader": "3.3.0",
+    "typescript": "2.0.3",
+    "webpack": "1.13.2",
+    "webpack-merge": "2.6.1",
+    "webpack-stream": "3.2.0"
+  }
+}
