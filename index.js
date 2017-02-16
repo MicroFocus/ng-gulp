@@ -81,11 +81,6 @@ function getWebpackConfig(config, webpackConfig) {
                 config.directories.vendor,
                 config.directories.nodeModules
             ]
-        },
-        resolveLoader: {
-            modulesDirectories: [
-                path.resolve(__dirname, 'node_modules')
-            ]
         }
     }, webpackConfig);
 }
