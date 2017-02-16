@@ -11,7 +11,8 @@ The consuming application must include the following dependencies
 ```
 
 ## Usage
-Your consuming application should have the following directory structure and files. This structure is [configurable](#options).
+### Project Structure
+The consuming application should have the following directory structure and files. This structure is [configurable](#options).
 * images/
 * src/
   * index.html
@@ -32,6 +33,13 @@ var ngGulpOptions = {...};
 
 ngGulp(gulp, ngGulpOptions);
 ```
+
+### Commands
+Run these commands from the root of the consuming application:
+* `gulp` - Starts development environment (development build, file watchers, and server)
+* `gulp build:development` - Development build. This build is optimized for speed. Writes files to `dist/` by default
+* `gulp build:production` - Production build. This build is optimized for size and quality of output. Writes files to `dist/` by default
+* `gulp clean` - Cleans all built assets by removing `dist/`
 
 ## Options
 
@@ -166,3 +174,10 @@ Specify vendor dependencies for production. Non-Javascript and Non-CSS files are
 `[config.directories.outputVendor]`. Javascript and CSS files are bundled into 
 `[config.directories.outputVendor]\[config.vendorJsBasename].js` and
 `[config.directories.outputVendor]\[config.vendorCssBasename].css` respectively.
+
+## Testing
+### Unit tests
+Coming soon
+
+### E2E tests
+Coming soon
