@@ -1,13 +1,14 @@
 {
   "name": "ng-gulp",
   "version": "0.1.0",
-  "description": "Angular build and development environment configurations",
+  "description": "Build configuration and development environment for Angular 1 applications using Typescript and Sass.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Joe Hawkins <joe.hawkins@microfocus.com>",
-  "license": "SEE LICENSE IN LICENSE.md",
+  "author": "Joe Hawkins <jedwardhawkins@gmail.com>",
+  "license": "ISC",
+  "repository": "https://github.com/jedwardhawkins/ng-gulp.git",
   "dependencies": {
     "gulp": "3.9.1",
     "gulp-autoprefixer": "3.1.1",
