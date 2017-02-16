@@ -103,6 +103,15 @@ Default: `'vendor'`
 
 Change the base name of `[config.directories.outputVendor]\vendor.js` and `[config.directories.outputVendor]\vendor.min.js`
 
+### .externals
+Type: `Object`
+Default: `{ 'angular': true }`
+
+Merge additional external libraries into the default set of external libraries. This object is passed to Webpack to 
+specify modules that will be loaded by the environment, rather than added to the Webpack bundle. NOTE: Some libraries 
+contain hyphens in their names. For such libraries use the following format: 
+`{ 'angular-ui-router': 'window["angular-ui-router"]' }`
+
 ### .files.images
 Type: `String|Array<String>`
 Default: `'images/**/*.{png,gif,jpg,svg}'`

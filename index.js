@@ -20,9 +20,15 @@ var webpackMerge = require('webpack-merge');
 var cwd = process.cwd();
 var defaults = {
     cssBasename: 'app',
-    jsBasename: 'app',
-    vendorCssBasename: 'vendor',
-    vendorJsBasename: 'vendor',
+    directories: {
+        nodeModules: path.resolve(cwd, 'node_modules'),
+        output: path.resolve(cwd, 'dist'),
+        outputImages: path.resolve(cwd, 'dist/images'),
+        outputVendor: path.resolve(cwd, 'dist/vendor'),
+        src: path.resolve(cwd, 'src'),
+        vendor: path.resolve(cwd, 'vendor')
+    },
+    externals: { 'angular': true },
     files: {
         images: path.resolve(cwd, 'images/**/*.{png,gif,jpg,svg}'),
         indexDevelopment: path.resolve(cwd, 'src/index.html'),
@@ -36,25 +42,15 @@ var defaults = {
         vendorDevelopment: [ ],
         vendorProduction: [ ]
     },
-    directories: {
-        nodeModules: path.resolve(cwd, 'node_modules'),
-        output: path.resolve(cwd, 'dist'),
-        outputImages: path.resolve(cwd, 'dist/images'),
-        outputVendor: path.resolve(cwd, 'dist/vendor'),
-        src: path.resolve(cwd, 'src'),
-        vendor: path.resolve(cwd, 'vendor')
-    }
+    jsBasename: 'app',
+    vendorCssBasename: 'vendor',
+    vendorJsBasename: 'vendor'
 };
 
 
 function getWebpackConfig(config, webpackConfig) {
     return webpackMerge({
-        externals:
-            {
-                'angular': true,
-                // Wrapped in window because of hyphens
-                'angular-ui-router': 'window["angular-ui-router"]'
-            },
+        externals: config.externals,
         module: {
             preLoaders: [
                 {
