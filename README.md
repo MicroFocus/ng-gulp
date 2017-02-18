@@ -6,7 +6,7 @@ The consuming application must include the following dependencies
 ```
 "devDependencies": {    
     "gulp": "3.9.1",
-    "ng-gulp": "jedwardhawkins/ng-gulp"
+    "ng-gulp": "git@github.com:jedwardhawkins/ng-gulp.git"
 }
 ```
 

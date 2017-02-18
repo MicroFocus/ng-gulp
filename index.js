@@ -4,7 +4,7 @@ var gulpClean = require('gulp-clean');
 var gulpCleanCss = require('gulp-clean-css');
 var gulpConcat = require('gulp-concat');
 var gulpConnect = require('gulp-connect');
-var gulpFilter = require('gulp-filter');
+var gulpIgnore = require('gulp-ignore');
 var gulpImageMin = require('gulp-imagemin');
 var gulpRename = require('gulp-rename');
 var gulpSass = require('gulp-sass');
@@ -104,7 +104,7 @@ function registerTasks(gulp, config) {
     gulp.task('clean', function() {
         return gulp
             .src(config.directories.output)
-            .pipe(gulpClean());
+            .pipe(gulpClean({force: true}));
     });
 
     gulp.task('copy:development', [
@@ -143,7 +143,7 @@ function registerTasks(gulp, config) {
     gulp.task('copy:vendor:development', function() {
         return gulp
             .src(config.files.vendorDevelopment)
-            .pipe(gulpFilter([ '**', '!**/*.css', '!**/*.js' ]))
+            .pipe(gulpIgnore.exclude('**/*.{css,js}'))
             .pipe(gulpConnect.reload())
             .pipe(gulp.dest(config.directories.outputVendor));
     });
@@ -151,7 +151,7 @@ function registerTasks(gulp, config) {
     gulp.task('copy:vendor:production', function() {
         return gulp
             .src(config.files.vendorProduction)
-            .pipe(gulpFilter([ '**', '!**/*.css', '!**/*.js' ]))
+            .pipe(gulpIgnore.exclude('**/*.{css,js}'))
             .pipe(gulp.dest(config.directories.outputVendor));
     });
 
@@ -173,7 +173,7 @@ function registerTasks(gulp, config) {
     gulp.task('vendor:development:css', function() {
         return gulp
             .src(config.files.vendorDevelopment)
-            .pipe(gulpFilter(['**/*.css']))
+            .pipe(gulpIgnore.include('**/*.css'))
             .pipe(gulpSourcemaps.init())
             .pipe(gulpConcat(config.vendorCssBasename + '.css'))
             .pipe(gulpSourcemaps.write())
@@ -184,7 +184,7 @@ function registerTasks(gulp, config) {
     gulp.task('vendor:development:js', function() {
         return gulp
             .src(config.files.vendorDevelopment)
-            .pipe(gulpFilter(['**/*.js']))
+            .pipe(gulpIgnore.include('**/*.js'))
             .pipe(gulpSourcemaps.init())
             .pipe(gulpConcat(config.vendorJsBasename + '.js'))
             .pipe(gulpSourcemaps.write())
@@ -197,7 +197,7 @@ function registerTasks(gulp, config) {
     gulp.task('vendor:production:css', function() {
         return gulp
             .src(config.files.vendorProduction)
-            .pipe(gulpFilter(['**/*.css']))
+            .pipe(gulpIgnore.include('**/*.css'))
             .pipe(gulpSourcemaps.init())
             .pipe(gulpConcat(config.vendorCssBasename + '.css'))
             .pipe(gulpCleanCss())
@@ -209,7 +209,7 @@ function registerTasks(gulp, config) {
     gulp.task('vendor:production:js', function() {
         return gulp
             .src(config.files.vendorProduction)
-            .pipe(gulpFilter(['**/*.js']))
+            .pipe(gulpIgnore.include('**/*.js'))
             .pipe(gulpSourcemaps.init())
             .pipe(gulpConcat(config.vendorJsBasename + '.js'))
             .pipe(gulpUglify())
