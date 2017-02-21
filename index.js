@@ -77,7 +77,7 @@ function getWebpackConfig(config, webpackConfig) {
                 },
                 {
                     test: /\.html$/,
-                    loader: 'ngtemplate?relativeTo=' + config.directories.src + '/!html'
+                    loader: 'ngtemplate?relativeTo=' + config.directories.src + '/!html?attrs=false'
                 }
             ]
         },

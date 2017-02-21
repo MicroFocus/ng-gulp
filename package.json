@@ -1,6 +1,6 @@
 {
   "name": "ng-gulp",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Build configuration and development environment for Angular 1 applications using Typescript and Sass.",
   "main": "index.js",
   "scripts": {
