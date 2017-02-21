@@ -91,6 +91,12 @@ Default: `'app'`
 
 Change the base name of `[config.directories.output]\app.js` and `[config.directories.output]\app.min.js`
 
+### .devServer
+Type: `boolean`
+Default: `true`
+
+Start a development server with LiveReload. Serves files in `[config.directories.output]` by default.
+
 ### .vendorCssBasename
 Type: `String`
 Default: `'vendor'`

@@ -20,6 +20,7 @@ var webpackMerge = require('webpack-merge');
 var cwd = process.cwd();
 var defaults = {
     cssBasename: 'app',
+    devServer: true,
     directories: {
         nodeModules: path.resolve(cwd, 'node_modules'),
         output: path.resolve(cwd, 'dist'),
@@ -47,6 +48,16 @@ var defaults = {
     vendorJsBasename: 'vendor'
 };
 
+
+function getDefaultTasks(config) {
+    var tasks = [ 'build:development', 'watch' ];
+
+    if(config.devServer) {
+        tasks.push('serve:development');
+    }
+
+    return tasks;
+}
 
 function getWebpackConfig(config, webpackConfig) {
     return webpackMerge({
@@ -155,11 +166,7 @@ function registerTasks(gulp, config) {
             .pipe(gulp.dest(config.directories.outputVendor));
     });
 
-    gulp.task('default', [
-        'build:development',
-        'watch',
-        'serve:development'
-    ]);
+    gulp.task('default', getDefaultTasks(config));
 
     gulp.task('optimize:images', function() {
         return gulp
