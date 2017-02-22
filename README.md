@@ -97,6 +97,12 @@ Default: `true`
 
 Start a development server with LiveReload. Serves files in `[config.directories.output]` by default.
 
+### .devServerPort
+Type: `number`
+Default: 8080
+
+The port for the dev server.
+
 ### .vendorCssBasename
 Type: `String`
 Default: `'vendor'`

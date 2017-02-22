@@ -21,6 +21,7 @@ var cwd = process.cwd();
 var defaults = {
     cssBasename: 'app',
     devServer: true,
+    devServerPort: 8080,
     directories: {
         nodeModules: path.resolve(cwd, 'node_modules'),
         output: path.resolve(cwd, 'dist'),
@@ -252,7 +253,7 @@ function registerTasks(gulp, config) {
     gulp.task('serve:development', function() {
         gulpConnect.server({
             livereload: true,
-            port: 8080,
+            port: config.devServerPort,
             root: config.directories.output
         });
     });
@@ -260,7 +261,7 @@ function registerTasks(gulp, config) {
     gulp.task('serve:production', function() {
         gulpConnect.server({
             livereload: false,
-            port: 8080,
+            port: config.devServerPort,
             root: config.directories.output
         });
     });
