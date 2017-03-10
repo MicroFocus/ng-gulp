@@ -11,6 +11,7 @@ var gulpSass = require('gulp-sass');
 var gulpSourcemaps = require('gulp-sourcemaps');
 var gulpUglify = require('gulp-uglify');
 var gulpWatch = require('gulp-watch');
+var minimist = require('minimist');
 var path = require('path');
 var webpack = require('webpack');
 var webpackStream = require('webpack-stream');
@@ -349,8 +350,16 @@ function registerTasks(gulp, config) {
 
 
 module.exports = function ngGulp(gulp, config) {
+    // Read arguments from command line
+    var knownOptions = {
+        string: [ 'port' ],
+        alias: { port: 'devServerPort' },
+        default: { port: config.port || defaults.port }
+    };
+    var args = minimist(process.argv.slice(2), knownOptions);
+
     // Add/Merge defaults to configuration
-    config = _.merge(defaults, config);
+    config = _.merge(defaults, config, args);
 
     // Register Tasks
     registerTasks(gulp, config);

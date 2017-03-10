@@ -101,7 +101,8 @@ Start a development server with LiveReload. Serves files in `[config.directories
 Type: `number`
 Default: 8080
 
-The port for the dev server.
+The port for the dev server. Override configuration in gulpfile and ng-gulp with commandline argument "--port". 
+(ex: `gulp --port=4000`)
 
 ### .vendorCssBasename
 Type: `String`
