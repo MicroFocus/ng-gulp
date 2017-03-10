@@ -1,9 +1,12 @@
 var _ = require('lodash');
+var connectGzip = require('connect-gzip');
 var gulpAutoprefixer = require('gulp-autoprefixer');
 var gulpClean = require('gulp-clean');
 var gulpCleanCss = require('gulp-clean-css');
 var gulpConcat = require('gulp-concat');
 var gulpConnect = require('gulp-connect');
+var gulpGzip = require('gulp-gzip');
+var gulpIf = require('gulp-if');
 var gulpIgnore = require('gulp-ignore');
 var gulpImageMin = require('gulp-imagemin');
 var gulpRename = require('gulp-rename');
@@ -23,6 +26,8 @@ var defaults = {
     cssBasename: 'app',
     devServer: true,
     devServerPort: 8080,
+    productionServerGzip: true,
+    productionServerPort: 8080,
     directories: {
         nodeModules: path.resolve(cwd, 'node_modules'),
         output: path.resolve(cwd, 'dist'),
@@ -207,11 +212,14 @@ function registerTasks(gulp, config) {
         return gulp
             .src(config.files.vendorProduction)
             .pipe(gulpIgnore.include('**/*.css'))
-            .pipe(gulpSourcemaps.init())
             .pipe(gulpConcat(config.vendorCssBasename + '.css'))
+            .pipe(gulp.dest(config.directories.outputVendor))
+            .pipe(gulpSourcemaps.init())
             .pipe(gulpCleanCss())
-            .pipe(gulpRename({ extname: '.min.css' }))
+            .pipe(gulpRename({ basename: config.vendorCssBasename, extname: '.min.css' }))
             .pipe(gulpSourcemaps.write('./'))
+            .pipe(gulp.dest(config.directories.outputVendor))
+            .pipe(gulpIf(config.productionServerGzip, gulpGzip()))
             .pipe(gulp.dest(config.directories.outputVendor));
     });
 
@@ -219,11 +227,14 @@ function registerTasks(gulp, config) {
         return gulp
             .src(config.files.vendorProduction)
             .pipe(gulpIgnore.include('**/*.js'))
-            .pipe(gulpSourcemaps.init())
             .pipe(gulpConcat(config.vendorJsBasename + '.js'))
+            .pipe(gulp.dest(config.directories.outputVendor))
+            .pipe(gulpSourcemaps.init())
             .pipe(gulpUglify())
             .pipe(gulpRename({ extname: '.min.js' }))
             .pipe(gulpSourcemaps.write('./'))
+            .pipe(gulp.dest(config.directories.outputVendor))
+            .pipe(gulpIf(config.productionServerGzip, gulpGzip()))
             .pipe(gulp.dest(config.directories.outputVendor));
     });
 
@@ -242,12 +253,16 @@ function registerTasks(gulp, config) {
     gulp.task('sass:production', function() {
         return gulp
             .src(config.files.sassManifest)
-            .pipe(gulpSourcemaps.init())
             .pipe(gulpSass({ outputStyle: 'expanded' }).on('error', gulpSass.logError))
             .pipe(gulpAutoprefixer({ browsers: [ 'last 2 versions' ] }))
+            .pipe(gulpRename({ basename: config.cssBasename }))
+            .pipe(gulp.dest(config.directories.output))
+            .pipe(gulpSourcemaps.init())
             .pipe(gulpCleanCss())
             .pipe(gulpRename({ basename: config.cssBasename, extname: '.min.css' }))
             .pipe(gulpSourcemaps.write('./'))
+            .pipe(gulp.dest(config.directories.output))
+            .pipe(gulpIf(config.productionServerGzip, gulpGzip()))
             .pipe(gulp.dest(config.directories.output));
     });
 
@@ -262,7 +277,8 @@ function registerTasks(gulp, config) {
     gulp.task('serve:production', function() {
         gulpConnect.server({
             livereload: false,
-            port: config.devServerPort,
+            middleware: function() { return config.productionServerGzip ? [ connectGzip.gzip() ] : []; },
+            port: config.productionServerPort,
             root: config.directories.output
         });
     });
@@ -334,17 +350,16 @@ function registerTasks(gulp, config) {
 
         return gulp
             .src(config.files.typescriptMainProduction)
-            .pipe(webpackStream(getWebpackConfig(config, {
-                devtool: 'source-map',
-                entry: entry,
-                output: {
-                    filename: '[name].min.js'
-                },
-                plugins: [
-                    new webpack.optimize.UglifyJsPlugin()
-                ]
-            })))
+            .pipe(webpackStream(getWebpackConfig(config, { entry: entry })))
+            .pipe(gulpRename({ basename: config.jsBasename }))
             .pipe(gulp.dest(config.directories.output))
+            .pipe(gulpSourcemaps.init())
+            .pipe(gulpUglify())
+            .pipe(gulpRename({ basename: config.jsBasename, extname: '.min.js' }))
+            .pipe(gulpSourcemaps.write('./'))
+            .pipe(gulp.dest(config.directories.output))
+            .pipe(gulpIf(config.productionServerGzip, gulpGzip()))
+            .pipe(gulp.dest(config.directories.output));
     });
 }
 

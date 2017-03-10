@@ -104,6 +104,18 @@ Default: 8080
 The port for the dev server. Override configuration in gulpfile and ng-gulp with commandline argument "--port". 
 (ex: `gulp --port=4000`)
 
+### .productionServerGzip
+Type: `boolean`
+Default: true
+
+Enable/Disable gzip output and middleware in the server.
+
+### .productionServerPort
+Type: `number`
+Default: 8080
+
+The port for the production server.
+
 ### .vendorCssBasename
 Type: `String`
 Default: `'vendor'`
