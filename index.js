@@ -49,8 +49,10 @@ var defaults = {
         tests: path.resolve(cwd, 'src/**/*.test.ts'),
         typescriptMainDevelopment: path.resolve(cwd, 'src/main.ts'),
         typescriptMainProduction: path.resolve(cwd, 'src/main.ts'),
+        typescriptMainTest: path.resolve(cwd, 'src/main.ts'),
         vendorDevelopment: [ ],
-        vendorProduction: [ ]
+        vendorProduction: [ ],
+        vendorTest: [ ]
     },
     jsBasename: 'app',
     vendorCssBasename: 'vendor',
@@ -287,30 +289,19 @@ function registerTasks(gulp, config) {
 
     gulp.task('test', function(callback) {
         var entry = {};
-        entry[config.jsBasename] = config.files.typescriptMainProduction;
+        entry[config.jsBasename] = config.files.typescriptMainTest;
+
+        var preprocessors = {};
+        preprocessors[config.files.typescriptMainTest] = [ 'webpack' ];
+        preprocessors[config.files.tests] = [ 'webpack' ];
 
         new karmaServer(
             {
                 // base path that will be used to resolve all patterns (eg. files, exclude)
                 basePath: cwd,
                 frameworks: [ 'jasmine' ],
-                files: [
-                    path.resolve(config.directories.nodeModules, 'angular/angular.js'),
-                    path.resolve(config.directories.nodeModules, 'angular-animate/angular-animate.js'),
-                    path.resolve(config.directories.nodeModules, 'angular-aria/angular-aria.js'),
-                    path.resolve(config.directories.nodeModules, 'angular-material/angular-material.js'),
-                    path.resolve(config.directories.nodeModules, 'angular-material/angular-material.css'),
-                    path.resolve(config.directories.nodeModules, 'angular-mocks/angular-mocks.js'),
-                    path.resolve(config.directories.nodeModules, 'angular-ui-router/release/angular-ui-router.js'),
-                    config.files.typescriptMainDevelopment,
-                    config.files.tests
-                ],
-                exclude: [
-                ],
-                preprocessors: {
-                    'src/main.ts': ['webpack'],
-                    'src/**/*.test.ts': ['webpack']
-                },
+                files: config.files.vendorTest.concat(config.files.typescriptMainTest, config.files.tests ),
+                preprocessors: preprocessors,
                 webpack: getWebpackConfig(config, { entry: entry }),
                 webpackMiddleware: {
                     // display no info to console (only warnings and errors)

@@ -191,6 +191,12 @@ Default: `'src/main.ts'`
 
 Specify a different location for the main Typescript file in production.
 
+### .files.typescriptMainTest
+Type: `String`
+Default: `'src/main.ts'`
+
+Specify a different location for the main Typescript file in test.
+
 ### .files.vendorDevelopment
 Type: `Array<String>`
 Default: `[]`
@@ -208,6 +214,12 @@ Specify vendor dependencies for production. Non-Javascript and Non-CSS files are
 `[config.directories.outputVendor]`. Javascript and CSS files are bundled into 
 `[config.directories.outputVendor]\[config.vendorJsBasename].js` and
 `[config.directories.outputVendor]\[config.vendorCssBasename].css` respectively.
+
+### .files.vendorTest
+Type: `Array<String>`
+Default: `[]`
+
+Specify vendor dependencies for test.
 
 ## Testing
 ### Unit tests
