@@ -24,6 +24,7 @@ var webpackMerge = require('webpack-merge');
 
 var cwd = process.cwd();
 var defaults = {
+    autoTest: false,
     cssBasename: 'app',
     devServer: true,
     devServerPort: 8080,
@@ -243,11 +244,13 @@ function registerTasks(gulp, config) {
     });
 
     gulp.task('sass:development', function() {
+        var multipleManifests = _.isArray(config.files.sassManifest) && config.files.sassManifest.length > 1;
+
         return gulp
             .src(config.files.sassManifest)
             .pipe(gulpSourcemaps.init())
             .pipe(gulpSass({ outputStyle: 'expanded' }).on('error', gulpSass.logError))
-            .pipe(gulpRename({ basename: config.cssBasename }))
+            .pipe(gulpIf(!multipleManifests, gulpRename({ basename: config.cssBasename })))
             .pipe(gulpAutoprefixer({ browsers: [ 'last 2 versions' ] }))
             .pipe(gulpSourcemaps.write())
             .pipe(gulpConnect.reload())
@@ -255,15 +258,18 @@ function registerTasks(gulp, config) {
     });
 
     gulp.task('sass:production', function() {
+        var multipleManifests = _.isArray(config.files.sassManifest) && config.files.sassManifest.length > 1;
+
         return gulp
             .src(config.files.sassManifest)
             .pipe(gulpSass({ outputStyle: 'expanded' }).on('error', gulpSass.logError))
             .pipe(gulpAutoprefixer({ browsers: [ 'last 2 versions' ] }))
-            .pipe(gulpRename({ basename: config.cssBasename }))
+            .pipe(gulpIf(!multipleManifests, gulpRename({ basename: config.cssBasename })))
             .pipe(gulp.dest(config.directories.output))
             .pipe(gulpSourcemaps.init())
             .pipe(gulpCleanCss())
-            .pipe(gulpRename({ basename: config.cssBasename, extname: '.min.css' }))
+            .pipe(gulpIf(!multipleManifests, gulpRename({ basename: config.cssBasename })))
+            .pipe(gulpRename({ extname: '.min.css' }))
             .pipe(gulpSourcemaps.write('./'))
             .pipe(gulp.dest(config.directories.output))
             .pipe(gulpIf(config.productionServerGzip, gulpGzip()))
@@ -332,7 +338,10 @@ function registerTasks(gulp, config) {
     gulp.task('watch:html', function() {
         return gulpWatch(config.files.srcHtml, function() {
             gulp.start('webpack:development');
-            gulp.start('test');
+
+            if (config.autoTest) {
+                gulp.start('test');
+            }
         });
     });
 
@@ -357,7 +366,10 @@ function registerTasks(gulp, config) {
     gulp.task('watch:ts', function() {
         return gulpWatch(config.files.srcTypescript, function() {
             gulp.start('webpack:development');
-            gulp.start('test');
+
+            if (config.autoTest) {
+                gulp.start('test');
+            }
         });
     });
 

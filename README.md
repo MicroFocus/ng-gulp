@@ -79,11 +79,18 @@ Default: `'vendor'`
 
 Change the directory where vendor files are located.
 
+### .autoTest
+Type: `boolean`
+Default: `false`
+
+Run tests on Typescript and HTML file changes in development environment.
+
 ### .cssBasename
 Type: `String`
 Default: `'app'`
 
-Change the base name of `[config.directories.output]\app.css` and `[config.directories.output]\app.min.css`
+Change the base name of `[config.directories.output]\app.css` and `[config.directories.output]\app.min.css`.
+This option is **not** valid, if .files.sassManifest is an array.
 
 ### .jsBasename
 Type: `String`
@@ -156,10 +163,11 @@ Default: `'src/index.html'`
 Specify a different location for the production version of index.html
 
 ### .files.sassManifest
-Type: `String`
+Type: `String|Array<String>`
 Default: `'src/main.scss'`
 
-Specify a different location for the sass manifest file.
+Specify a different location for the sass manifest file or multiple manifests. If multiple manifests are specified,
+.cssBasename option will use the basename of the files specified.
 
 ### .files.srcHtml
 Type: `String|Array<String>`
