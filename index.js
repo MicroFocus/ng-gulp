@@ -64,7 +64,7 @@ var defaults = {
 function getDefaultTasks(config) {
     var tasks = [ 'build:development', 'watch' ];
 
-    if(config.devServer) {
+    if(config.devServer !== false) {
         tasks.push('serve:development');
     }
 
@@ -277,20 +277,30 @@ function registerTasks(gulp, config) {
     });
 
     gulp.task('serve:development', function() {
-        gulpConnect.server({
+        var defaults = {
             livereload: true,
             port: config.devServerPort,
-            root: config.directories.output
-        });
+            root: [ config.directories.output ]
+        };
+
+        var options = config.devServer || {};
+        options = _.merge(defaults, options);
+
+        gulpConnect.server(options);
     });
 
     gulp.task('serve:production', function() {
-        gulpConnect.server({
+        var defaults = {
             livereload: false,
             middleware: function() { return config.productionServerGzip ? [ connectGzip.gzip() ] : []; },
             port: config.productionServerPort,
-            root: config.directories.output
-        });
+            root: [ config.directories.output ]
+        };
+
+        var options = config.productionServer || {};
+        options = _.merge(defaults, options);
+
+        gulpConnect.server(options);
     });
 
     gulp.task('test', function(callback) {

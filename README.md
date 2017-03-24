@@ -99,10 +99,12 @@ Default: `'app'`
 Change the base name of `[config.directories.output]\app.js` and `[config.directories.output]\app.min.js`
 
 ### .devServer
-Type: `boolean`
+Type: `boolean|Object`
 Default: `true`
 
-Start a development server with LiveReload. Serves files in `[config.directories.output]` by default.
+Start a development server with LiveReload. Serves files in `[config.directories.output]` by default. If `false`, the
+development server will not be started as part of the default gulp task. connect configuration can be specified as
+an `Object`. *Note: Do not specify port in the connect configuration. Use .devServerPort option instead.*
 
 ### .devServerPort
 Type: `number`
@@ -110,6 +112,13 @@ Default: 8080
 
 The port for the dev server. Override configuration in gulpfile and ng-gulp with commandline argument "--port". 
 (ex: `gulp --port=4000`)
+
+### .productionServer
+Type: `Object`
+Default: `{}`
+
+connect configuration for production server. *Note: Do not specify port in the connect configuration. Use 
+.productionServerPort option instead.*
 
 ### .productionServerGzip
 Type: `boolean`
