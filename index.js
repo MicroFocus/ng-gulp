@@ -28,8 +28,6 @@ var defaults = {
     cssBasename: 'app',
     devServer: true,
     devServerPort: 8080,
-    productionServerGzip: true,
-    productionServerPort: 8080,
     directories: {
         nodeModules: path.resolve(cwd, 'node_modules'),
         output: path.resolve(cwd, 'dist'),
@@ -56,6 +54,9 @@ var defaults = {
         vendorTest: [ ]
     },
     jsBasename: 'app',
+    productionServerGzip: true,
+    productionServerPort: 8080,
+    testChrome: false,
     vendorCssBasename: 'vendor',
     vendorJsBasename: 'vendor'
 };
@@ -304,21 +305,53 @@ function registerTasks(gulp, config) {
     });
 
     gulp.task('test', function(callback) {
-        var entry = {};
-        entry[config.jsBasename] = config.files.typescriptMainTest;
+        var srcBundlePath = path.join(config.directories.output, config.jsBasename + '.js');
 
         var preprocessors = {};
-        preprocessors[config.files.typescriptMainTest] = [ 'webpack' ];
         preprocessors[config.files.tests] = [ 'webpack' ];
+
+        var browsers = [ 'PhantomJS' ];
+        if(config.testChrome) {
+            browsers.push('Chrome');
+        }
 
         new karmaServer(
             {
                 // base path that will be used to resolve all patterns (eg. files, exclude)
                 basePath: cwd,
                 frameworks: [ 'jasmine' ],
-                files: config.files.vendorTest.concat(config.files.typescriptMainTest, config.files.tests ),
+                files: config.files.vendorTest.concat(srcBundlePath, config.files.tests ),
                 preprocessors: preprocessors,
-                webpack: getWebpackConfig(config, { entry: entry }),
+                webpack: {
+                    externals: config.externals,
+                    module: {
+                        preLoaders: [
+                            {
+                                test: /\.ts$/,
+                                loader: 'tslint'
+                            }
+                        ],
+                        loaders: [
+                            {
+                                test: /\.ts$/,
+                                loader: 'ts',
+                                exclude: new RegExp(config.directories.nodeModules)
+                            },
+                            {
+                                test: /\.html$/,
+                                loader: 'ngtemplate?relativeTo=' + config.directories.src + '/!html?attrs=false'
+                            }
+                        ]
+                    },
+                    resolve: {
+                        extensions: ['', '.ts', '.js'],
+                        modulesDirectories: [
+                            config.directories.src,
+                            config.directories.vendor,
+                            config.directories.nodeModules
+                        ]
+                    }
+                },
                 webpackMiddleware: {
                     // display no info to console (only warnings and errors)
                     noInfo: true,
@@ -328,10 +361,11 @@ function registerTasks(gulp, config) {
                 port: 9876,
                 colors: true,
                 logLevel: config.LOG_INFO,
-                autoWatch: true,
-                browsers: [ 'PhantomJS' ],
+                autoWatch: false,
+                browsers: browsers,
                 singleRun: true,
-                concurrency: Infinity
+                concurrency: Infinity,
+                mime: { 'text/x-typescript': ['ts','tsx'] }
             }, callback)
         .start();
     });
@@ -429,8 +463,15 @@ module.exports = function ngGulp(gulp, config) {
     // Read arguments from command line
     var knownOptions = {
         string: [ 'port' ],
-        alias: { port: 'devServerPort' },
-        default: { port: config.port || defaults.port }
+        boolean: [ 'chrome' ],
+        alias: {
+            port: 'devServerPort',
+            chrome: 'testChrome'
+        },
+        default: {
+            port: config.port || defaults.port,
+            chrome: config.testChrome || defaults.testChrome
+        }
     };
     var args = minimist(process.argv.slice(2), knownOptions);
 

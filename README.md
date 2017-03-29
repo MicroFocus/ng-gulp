@@ -132,6 +132,12 @@ Default: 8080
 
 The port for the production server.
 
+### .testChrome
+Type: `boolean`
+Default: false
+
+Enable running unit tests in Chrome for task gulp:test. Enable option from the command line with `gulp test --chrome`.
+
 ### .vendorCssBasename
 Type: `String`
 Default: `'vendor'`
@@ -240,7 +246,11 @@ Specify vendor dependencies for test.
 
 ## Testing
 ### Unit tests
-Coming soon
+Execute a single run of the unit test suite by running `gulp test` using PhantomJS. `gulp test --chrome` will run the 
+tests in PhantomJS and Chrome. Place unit tests under `src/` with the suffix `test.ts` to include tests in the suite.
+
+To enable running tests on file changes, set the `.autoWatch` option to true. *NOTE: this causes memory issues with
+ webpack and may slow down the response time of gulp and the auto reload feature.*
 
 ### E2E tests
 Coming soon
