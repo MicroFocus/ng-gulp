@@ -55,6 +55,7 @@ var defaults = {
         vendorTest: [ ]
     },
     jsBasename: 'app',
+    junitTestResults: false,
     productionServerGzip: true,
     productionServerPort: 8080,
     testChrome: false,
@@ -350,13 +351,29 @@ function registerTasks(gulp, config) {
             browsers.push('Chrome');
         }
 
+        var reporters = [ 'progress' ];
+        var junitConfiguration = {};
+        if(config.junitTestResults) {
+            reporters.push('junit');
+            junitConfiguration['outputFile'] = path.resolve(config.directories.output, 'test-results.xml');
+        }
+
         new karmaServer(
             {
-                // base path that will be used to resolve all patterns (eg. files, exclude)
+                autoWatch: testInBrowser,
                 basePath: cwd,
+                browsers: browsers,
+                colors: true,
+                concurrency: Infinity,
                 frameworks: [ 'jasmine' ],
                 files: config.files.vendorTest.concat(srcBundlePath, srcCssPath, config.files.tests ),
+                junitReporter: junitConfiguration,
+                logLevel: config.LOG_INFO,
+                mime: { 'text/x-typescript': ['ts','tsx'] },
+                port: 9876,
                 preprocessors: preprocessors,
+                reporters: reporters,
+                singleRun: !config.debugTests,
                 webpack: {
                     externals: config.externals,
                     module: {
@@ -391,16 +408,7 @@ function registerTasks(gulp, config) {
                     // display no info to console (only warnings and errors)
                     noInfo: true,
                     stats: { colors: true }
-                },
-                reporters: [ 'progress' ],
-                port: 9876,
-                colors: true,
-                logLevel: config.LOG_INFO,
-                autoWatch: testInBrowser,
-                browsers: browsers,
-                singleRun: !config.debugTests,
-                concurrency: Infinity,
-                mime: { 'text/x-typescript': ['ts','tsx'] }
+                }
             }, callback)
             .start();
     });
@@ -498,13 +506,14 @@ module.exports = function ngGulp(gulp, config) {
     // Read arguments from command line
     var knownOptions = {
         string: [ 'port' ],
-        boolean: [ 'chrome', 'debug-tests', 'edge', 'firefox', 'ie' ],
+        boolean: [ 'chrome', 'debug-tests', 'edge', 'firefox', 'ie', 'junit' ],
         alias: {
             chrome: 'testChrome',
             'debug-tests': 'debugTests',
             edge: 'testEdge',
             firefox: 'testFirefox',
             ie: 'testIE',
+            junit: 'junitTestResults',
             port: 'devServerPort'
         },
         default: {
@@ -513,6 +522,7 @@ module.exports = function ngGulp(gulp, config) {
             edge: config.testEdge || defaults.testEdge,
             firefox: config.testFirefox || defaults.testFirefox,
             ie: config.testIE || defaults.testIE,
+            junitTestResults: config.junitTestResults || defaults.junitTestResults,
             port: config.port || defaults.port
         }
     };

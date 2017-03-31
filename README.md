@@ -126,6 +126,13 @@ Default: 8080
 The port for the dev server. Override configuration in gulpfile and ng-gulp with commandline argument "--port". 
 (ex: `gulp --port=4000`)
 
+### .junitTestResults
+Type: `boolean`
+Default: false
+
+Reports the results of unit tests in `[config.directories.output]/test-results.xml`. Enable on the command line via
+`gulp test --junit`
+
 ### .productionServer
 Type: `Object`
 Default: `{}`
@@ -283,6 +290,9 @@ tests in PhantomJS and Chrome. Place unit tests under `src/` with the suffix `te
 `--chrome --edge --firefox --ie` are all supported commandline options.
 
 In order to keep the browser open for debugging, use the `--debug-tests` commandline option.
+
+JUnit test results can be generated via the `.junitTestResults` option or by the `--junit` commandline option. Results
+are published to `[config.directories.output]/test-results.xml`.
 
 To enable running tests on file changes, set the `.autoWatch` option to true. *NOTE: this causes memory issues with
  webpack and may slow down the response time of gulp and the auto reload feature.*
