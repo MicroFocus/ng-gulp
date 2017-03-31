@@ -1,6 +1,6 @@
 {
   "name": "ng-gulp",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "Build configuration and development environment for Angular 1 applications using Typescript and Sass.",
   "main": "index.js",
   "scripts": {
@@ -31,6 +31,9 @@
     "jasmine": "2.5.3",
     "karma": "1.5.0",
     "karma-chrome-launcher": "2.0.0",
+    "karma-edge-launcher": "0.4.1",
+    "karma-firefox-launcher": "1.0.1",
+    "karma-ie-launcher": "1.0.0",
     "karma-jasmine": "1.1.0",
     "karma-phantomjs-launcher": "1.0.4",
     "karma-webpack": "2.0.2",

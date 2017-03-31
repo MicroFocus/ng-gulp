@@ -40,6 +40,12 @@ Run these commands from the root of the consuming application:
 * `gulp build:development` - Development build. This build is optimized for speed. Writes files to `dist/` by default
 * `gulp build:production` - Production build. This build is optimized for size and quality of output. Writes files to `dist/` by default
 * `gulp clean` - Cleans all built assets by removing `dist/`
+* `gulp test` - Compiles and runs unit tests against PhantomJS. *NOTE: must run `gulp build:development` or `gulp build:production` first*
+* `gulp test --chrome` - Compiles and runs unit tests against PhantomJS and Chrome.
+* `gulp test --edge` - Compiles and runs unit tests against PhantomJS and Microsoft Edge.
+* `gulp test --firefox` - Compiles and runs unit tests against PhantomJS and Firefox.
+* `gulp test --ie` - Compiles and runs unit tests against PhantomJS and Internet Explorer.
+* `gulp test --debug-tests` - Compiles and runs unit tests against PhantomJS. Works with all browser flags. Uses Chrome by default
 
 ## Options
 
@@ -98,6 +104,13 @@ Default: `'app'`
 
 Change the base name of `[config.directories.output]\app.js` and `[config.directories.output]\app.min.js`
 
+### .debugTests
+Type: `boolean`
+Default: false
+
+Debug unit tests in browser. Enable option from the command line with `gulp test --debug-tests`. Works with any browser
+flag (i.e. `--chrome --edge --firefox --ie`). Uses Chrome for debugging if no browser is specified.
+
 ### .devServer
 Type: `boolean|Object`
 Default: `true`
@@ -136,7 +149,25 @@ The port for the production server.
 Type: `boolean`
 Default: false
 
-Enable running unit tests in Chrome for task gulp:test. Enable option from the command line with `gulp test --chrome`.
+Enable running unit tests in Chrome for task `gulp test`. Enable option from the command line with `gulp test --chrome`.
+
+### .testEdge
+Type: `boolean`
+Default: false
+
+Enable running unit tests in Edge for task `gulp test`. Enable option from the command line with `gulp test --edge`.
+
+### .testFirefox
+Type: `boolean`
+Default: false
+
+Enable running unit tests in Firefox for task `gulp test`. Enable option from the command line with `gulp test --firefox`.
+
+### .testIE
+Type: `boolean`
+Default: false
+
+Enable running unit tests in Internet Explorer for task `gulp test`. Enable option from the command line with `gulp test --ie`.
 
 ### .vendorCssBasename
 Type: `String`
@@ -248,6 +279,10 @@ Specify vendor dependencies for test.
 ### Unit tests
 Execute a single run of the unit test suite by running `gulp test` using PhantomJS. `gulp test --chrome` will run the 
 tests in PhantomJS and Chrome. Place unit tests under `src/` with the suffix `test.ts` to include tests in the suite.
+
+`--chrome --edge --firefox --ie` are all supported commandline options.
+
+In order to keep the browser open for debugging, use the `--debug-tests` commandline option.
 
 To enable running tests on file changes, set the `.autoWatch` option to true. *NOTE: this causes memory issues with
  webpack and may slow down the response time of gulp and the auto reload feature.*

@@ -26,6 +26,7 @@ var cwd = process.cwd();
 var defaults = {
     autoTest: false,
     cssBasename: 'app',
+    debugTests: false,
     devServer: true,
     devServerPort: 8080,
     directories: {
@@ -57,10 +58,28 @@ var defaults = {
     productionServerGzip: true,
     productionServerPort: 8080,
     testChrome: false,
+    testEdge: false,
+    testFirefox: false,
+    testIE: false,
     vendorCssBasename: 'vendor',
     vendorJsBasename: 'vendor'
 };
 
+function excludePattern(patterns) {
+    if (/^!/.test(patterns)) {
+        return patterns;
+    }
+
+    return '!' + patterns;
+}
+
+function exclude(patterns) {
+    if (_.isString(patterns)) {
+        return excludePattern(patterns);
+    }
+
+    throw new Error('Type not supported. Pattern must be a string.');
+}
 
 function getDefaultTasks(config) {
     var tasks = [ 'build:development', 'watch' ];
@@ -306,12 +325,28 @@ function registerTasks(gulp, config) {
 
     gulp.task('test', function(callback) {
         var srcBundlePath = path.join(config.directories.output, config.jsBasename + '.js');
+        var srcCssPath = path.join(config.directories.output, config.cssBasename + '.css');
 
         var preprocessors = {};
         preprocessors[config.files.tests] = [ 'webpack' ];
 
+        var testInBrowser = config.testChrome || config.testEdge || config.testFirefox || config.testIE;
+
         var browsers = [ 'PhantomJS' ];
-        if(config.testChrome) {
+        if (config.testChrome) {
+            browsers.push('Chrome');
+        }
+        if (config.testEdge) {
+            browsers.push('Edge');
+        }
+        if (config.testFirefox) {
+            browsers.push('Firefox');
+        }
+        if (config.testIE) {
+            browsers.push('IE')
+        }
+        if (config.debugTests && !(testInBrowser)) {
+            testInBrowser = true;
             browsers.push('Chrome');
         }
 
@@ -320,7 +355,7 @@ function registerTasks(gulp, config) {
                 // base path that will be used to resolve all patterns (eg. files, exclude)
                 basePath: cwd,
                 frameworks: [ 'jasmine' ],
-                files: config.files.vendorTest.concat(srcBundlePath, config.files.tests ),
+                files: config.files.vendorTest.concat(srcBundlePath, srcCssPath, config.files.tests ),
                 preprocessors: preprocessors,
                 webpack: {
                     externals: config.externals,
@@ -361,13 +396,13 @@ function registerTasks(gulp, config) {
                 port: 9876,
                 colors: true,
                 logLevel: config.LOG_INFO,
-                autoWatch: false,
+                autoWatch: testInBrowser,
                 browsers: browsers,
-                singleRun: true,
+                singleRun: !config.debugTests,
                 concurrency: Infinity,
                 mime: { 'text/x-typescript': ['ts','tsx'] }
             }, callback)
-        .start();
+            .start();
     });
 
     gulp.task('watch', [
@@ -408,7 +443,7 @@ function registerTasks(gulp, config) {
     });
 
     gulp.task('watch:ts', function() {
-        return gulpWatch(config.files.srcTypescript, function() {
+        return gulpWatch([ config.files.srcTypescript, exclude(config.files.tests) ], function() {
             gulp.start('webpack:development');
 
             if (config.autoTest) {
@@ -463,14 +498,22 @@ module.exports = function ngGulp(gulp, config) {
     // Read arguments from command line
     var knownOptions = {
         string: [ 'port' ],
-        boolean: [ 'chrome' ],
+        boolean: [ 'chrome', 'debug-tests', 'edge', 'firefox', 'ie' ],
         alias: {
-            port: 'devServerPort',
-            chrome: 'testChrome'
+            chrome: 'testChrome',
+            'debug-tests': 'debugTests',
+            edge: 'testEdge',
+            firefox: 'testFirefox',
+            ie: 'testIE',
+            port: 'devServerPort'
         },
         default: {
-            port: config.port || defaults.port,
-            chrome: config.testChrome || defaults.testChrome
+            chrome: config.testChrome || defaults.testChrome,
+            debugTests: config.debugTests || defaults.debugTests,
+            edge: config.testEdge || defaults.testEdge,
+            firefox: config.testFirefox || defaults.testFirefox,
+            ie: config.testIE || defaults.testIE,
+            port: config.port || defaults.port
         }
     };
     var args = minimist(process.argv.slice(2), knownOptions);
