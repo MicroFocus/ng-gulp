@@ -111,6 +111,10 @@ function getWebpackConfig(config, webpackConfig) {
                 {
                     test: /\.html$/,
                     loader: 'ngtemplate?relativeTo=' + config.directories.src + '/!html?attrs=false'
+                },
+                {
+                    test: /\.json/,
+                    loader: 'json'
                 }
             ]
         },
@@ -392,6 +396,10 @@ function registerTasks(gulp, config) {
                             {
                                 test: /\.html$/,
                                 loader: 'ngtemplate?relativeTo=' + config.directories.src + '/!html?attrs=false'
+                            },
+                            {
+                                test: /\.json/,
+                                loader: 'json'
                             }
                         ]
                     },
