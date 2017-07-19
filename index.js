@@ -303,14 +303,14 @@ function registerTasks(gulp, config) {
             .pipe(gulp.dest(config.directories.output));
     });
 
-    gulp.task('add-custom-middleware', function() {
+    gulp.task('serve:middleware', function() {
         if (fs.existsSync(path.resolve(cwd, 'server/server.js'))) {
             var customMiddleware = require(path.resolve(cwd, 'server/server.js'));
             config.gulpConnectMiddlewareApps.push(customMiddleware);
         }
     });
 
-    gulp.task('serve:development', ['add-custom-middleware'], function() {
+    gulp.task('serve:development', ['serve:middleware'], function() {
         var defaults = {
             livereload: true,
             middleware: function() { return config.gulpConnectMiddlewareApps; },
@@ -324,7 +324,7 @@ function registerTasks(gulp, config) {
         gulpConnect.server(options);
     });
 
-    gulp.task('serve:production', ['add-custom-middleware'], function() {
+    gulp.task('serve:production', ['serve:middleware'], function() {
         if (config.productionServerGzip) {
             config.gulpConnectMiddlewareApps.push(connectGzip.gzip());
         }
