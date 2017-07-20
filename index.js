@@ -20,6 +20,7 @@ var path = require('path');
 var webpack = require('webpack');
 var webpackStream = require('webpack-stream');
 var webpackMerge = require('webpack-merge');
+var fs = require('fs');
 
 
 var cwd = process.cwd();
@@ -29,6 +30,7 @@ var defaults = {
     debugTests: false,
     devServer: true,
     devServerPort: 8080,
+    gulpConnectMiddlewareApps: [],
     directories: {
         nodeModules: path.resolve(cwd, 'node_modules'),
         output: path.resolve(cwd, 'dist'),
@@ -301,9 +303,17 @@ function registerTasks(gulp, config) {
             .pipe(gulp.dest(config.directories.output));
     });
 
-    gulp.task('serve:development', function() {
+    gulp.task('serve:middleware', function() {
+        if (fs.existsSync(path.resolve(cwd, 'server/server.js'))) {
+            var customMiddleware = require(path.resolve(cwd, 'server/server.js'));
+            config.gulpConnectMiddlewareApps.push(customMiddleware);
+        }
+    });
+
+    gulp.task('serve:development', ['serve:middleware'], function() {
         var defaults = {
             livereload: true,
+            middleware: function() { return config.gulpConnectMiddlewareApps; },
             port: config.devServerPort,
             root: [ config.directories.output ]
         };
@@ -314,10 +324,14 @@ function registerTasks(gulp, config) {
         gulpConnect.server(options);
     });
 
-    gulp.task('serve:production', function() {
+    gulp.task('serve:production', ['serve:middleware'], function() {
+        if (config.productionServerGzip) {
+            config.gulpConnectMiddlewareApps.push(connectGzip.gzip());
+        }
+
         var defaults = {
             livereload: false,
-            middleware: function() { return config.productionServerGzip ? [ connectGzip.gzip() ] : []; },
+            middleware: function() { return config.gulpConnectMiddlewareApps; },
             port: config.productionServerPort,
             root: [ config.directories.output ]
         };
