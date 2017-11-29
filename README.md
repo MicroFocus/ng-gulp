@@ -132,8 +132,7 @@ The port for the dev server. Override configuration in gulpfile and ng-gulp with
 Type: `boolean`
 Default: `false`
 
-Disable LiveReload for the development server. Optionally disable LiveReload from the command line with `gulp 
---disable-live-reload`.
+Disable LiveReload for the development server.
 
 ### .junitTestResults
 Type: `boolean`
