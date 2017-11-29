@@ -29,6 +29,7 @@ var defaults = {
     cssBasename: 'app',
     debugTests: false,
     devServer: true,
+    disableLiveReload: false,
     devServerPort: 8080,
     gulpConnectMiddlewareApps: [],
     directories: {
@@ -312,7 +313,7 @@ function registerTasks(gulp, config) {
 
     gulp.task('serve:development', ['serve:middleware'], function() {
         var defaults = {
-            livereload: true,
+            livereload: !config.disableLiveReload,
             middleware: function() { return config.gulpConnectMiddlewareApps; },
             port: config.devServerPort,
             root: [ config.directories.output ]
