@@ -2,11 +2,12 @@
 Build configuration and development environment for Angular 1 applications using Typescript and Sass.
 
 ## Installation
-The consuming application must include the following dependencies
+The consuming application also requires a dependency on Gulp.
 ```
-"devDependencies": {    
-    "gulp": "3.9.1",
-    "ng-gulp": "git@github.com:jedwardhawkins/ng-gulp.git"
+"devDependencies": {
+    ...    
+    "gulp": "3.9.1"
+    ...
 }
 ```
 
