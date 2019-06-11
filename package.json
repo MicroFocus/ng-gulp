@@ -7,8 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Joe Hawkins <jedwardhawkins@gmail.com>",
-  "license": "ISC",
-  "repository": "https://github.com/jedwardhawkins/ng-gulp.git",
+  "license": "MIT",
+  "repository": "https://github.com/MicroFocus/ng-gulp.git",
   "dependencies": {
     "@types/jasmine": "2.5.45",
     "connect-gzip": "0.1.6",
