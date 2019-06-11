@@ -2,11 +2,12 @@
 Build configuration and development environment for Angular 1 applications using Typescript and Sass.
 
 ## Installation
-The consuming application must include the following dependencies
+The consuming application also requires a dependency on Gulp.
 ```
-"devDependencies": {    
-    "gulp": "3.9.1",
-    "ng-gulp": "git@github.com:jedwardhawkins/ng-gulp.git"
+"devDependencies": {
+    ...    
+    "gulp": "3.9.1"
+    ...
 }
 ```
 
@@ -14,6 +15,8 @@ The consuming application must include the following dependencies
 ### Project Structure
 The consuming application should have the following directory structure and files. This structure is [configurable](#options).
 * images/
+* server/
+  * server.js
 * src/
   * index.html
   * main.ts
@@ -125,6 +128,12 @@ Default: 8080
 
 The port for the dev server. Override configuration in gulpfile and ng-gulp with commandline argument "--port". 
 (ex: `gulp --port=4000`)
+
+### .disableLiveReload
+Type: `boolean`
+Default: `false`
+
+Disable LiveReload for the development server.
 
 ### .junitTestResults
 Type: `boolean`
@@ -282,6 +291,28 @@ Default: `[]`
 
 Specify vendor dependencies for test.
 
+### .gulpConnectMiddlewareApps
+
+Type: `Array<any>`
+Default: `[]`
+
+Provides a way to add one or more custom middleware apps to be loaded by gulp-connect in the serve:production and serve:development tasks (see: https://github.com/avevlad/gulp-connect#optionsmiddleware).
+
+For example:
+
+```
+var app = require('express').express();
+
+app.get('/hello', function(req, res) {
+    res.send('Hello World!');
+});
+
+ngGulp(gulp, {
+    ...
+    gulpConnectMiddlewareApps: [app]
+});
+```
+
 ## Testing
 ### Unit tests
 Execute a single run of the unit test suite by running `gulp test` using PhantomJS. `gulp test --chrome` will run the 
@@ -299,3 +330,21 @@ To enable running tests on file changes, set the `.autoWatch` option to true. *N
 
 ### E2E tests
 Coming soon
+
+## Custom Middleware
+
+In addition to using the `gulpConnectMiddlewareApps` configuration option, you can also have custom middleware apps loaded automatically by exporting a variable in the file: server/server.js.  ng-gulp automatically takes whatever is exported by this file, and adds it to the `gulpConnectMiddlewareApps` array when running the serve:production and serve:development tasks.
+
+Example server/server.js file:
+
+```
+var express = require('express');
+var app = express();
+
+app.get('/hello', function(req, res) {
+    res.send('Hello World!');
+});
+
+module.exports = app;
+```
+
