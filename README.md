@@ -1,6 +1,8 @@
 # ng-gulp
 Build configuration and development environment for Angular 1 applications using Typescript and Sass.
 
+This project is used by the ng-ias, ux-ias, and CX projects in the Micro Focus organization.
+
 ## Installation
 The consuming application also requires a dependency on Gulp.
 ```
